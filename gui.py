@@ -172,13 +172,13 @@ class ImageViewer(QtGui.QMainWindow):
         self.imageLabel.setScaledContents(True)
 
     def mouseRemove(self):
-        global tempFile, fileName, state
+        global tempFile, fileName, state,path
 
         # deleteRow(str(tempFile2),str(fileName+'.lines.txt'))
         if state == 0:
-            deleteRow(str(tempFile), str(fileName))
+            deleteRow(str(tempFile), str(fileName),path)
         elif state == 1:
-            deleteRow(str(tempFile), str(fileName))
+            deleteRow(str(tempFile), str(fileName),path)
 
     def nextPicture(self):
 
@@ -284,11 +284,11 @@ class ImageViewer(QtGui.QMainWindow):
        # self.scaleFactor = 1.0
 
     def mouseDraw(self, factor):
-        global tempFile, fileName, state
+        global tempFile, fileName, state,path
         if state == 0:
-            click_drag(str(tempFile), str(fileName))
+            click_drag(str(tempFile), str(fileName),path)
         elif state == 1:
-            click_drag(str(tempFile), str(fileName))
+            click_drag(str(tempFile), str(fileName),path)
 
     def mouseEdit(self):
         global fileName,tempFile,state,path

@@ -17,8 +17,8 @@ def box(dir):
         box('/home/deepayan/codes_seg/new_set2/'+file)
         print c'''
 #box('/home/deepayan/codes_seg/data/new_set/')
-def click_drag(tempFile,image_name):
-    path = '/home/deepayan/CVIT_codes/API/'
+def click_drag(tempFile,image_name,path):
+   
     name = (os.path.basename(str(image_name)))
     file_name = path+ name + '.lines.txt'
     print file_name
@@ -54,7 +54,7 @@ def click_drag(tempFile,image_name):
     cv2.resizeWindow('image', 500,800)
     cv2.setMouseCallback("image", draw_rect)
     #file_name = "/home/deepayan/codes_seg/set2/SiddhantaChandrika_Page_05.jpg.lines.txt"
-    clone = image.copy()
+    #clone = image.copy()
     # print file_name
     data = []
 
@@ -113,8 +113,8 @@ def findIndex2(p,q, file_name):
                 pos=i
     return  pos
 #click_drag("/home/deepayan/codes_seg/set2/temp.jpg")
-def deleteRow(tempFile,image_name):
-    path = '/home/deepayan/CVIT_codes/API/'
+def deleteRow(tempFile,image_name,path):
+    
     name = (os.path.basename(str(image_name)))
     file_name = path + name + '.lines.txt'
     def draw_rect(event, x, y, flags, param):
