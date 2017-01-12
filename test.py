@@ -54,28 +54,32 @@ def get_position(image_name):
         blocks_data = np.loadtxt(blocks_file)'''
     return (data)
 #get_position("/home/deepayan/codes_seg/set2/")
-def show_skew(path):
-    image = cv2.imread(path)
+def show_skew(image_name):
+    image = cv2.imread(image_name)
+    path = os.path.dirname(image_name)
+    print path
 
-    if os.path.exists(path+'.lines.txt') == False:
-        subprocess.call('./j-layout ' + path, shell=True)
-    pos = np.loadtxt(path+'.lines.txt')
+    if os.path.exists(image_name + '.lines.txt') == False:
+        subprocess.call('./j-layout ' + image_name, shell=True)
+    pos = np.loadtxt(image_name + '.lines.txt')
     for i in range(len(pos)):
-        #for j in range(4):
-        x1 = int(pos[i,0])
-        #print x1
-        y1 = int(pos[i,1])
-        x2 = int(x1+pos[i,2])
-        y2 = int(y1+pos[i,3])
-        #print x1,y1,x2,y2
+        # for j in range(4):
+        x1 = int(pos[i, 0])
+        # print x1
+        y1 = int(pos[i, 1])
+        x2 = int(x1 + pos[i, 2])
+        y2 = int(y1 + pos[i, 3])
+        # print x1,y1,x2,y2
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(image, str(i), (x1-50,y1+25), font, 1, (0, 255, 0), 2)
-        cv2.rectangle(image,(x1,y1),(x2,y2),(255,0,0), 2)
-    #cv2.imshow('image',cv2.resize(image,(700,1000)))
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-    #if image.shape[1]>1000:
-    cv2.imwrite("/home/deepayan/CVIT_codes/skew/skew_temp.jpg",image)
+        cv2.putText(image, str(i), (x1 - 50, y1 + 25), font, 1, (0, 255, 0), 2)
+        cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+    # cv2.imshow('image',cv2.resize(image,(700,1000)))
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    # if image.shape[1]>1000:
+
+    cv2.imwrite(path + "/skew_temp.jpg", image)
+
 
 def show_image(image_name):
     image = cv2.imread(image_name)
@@ -83,21 +87,22 @@ def show_image(image_name):
     name = os.path.basename(image_name)
     # ... do stuff with dirpath
 
-
-    (pos)=get_position(image_name)
+    print path
+    (pos) = get_position(image_name)
 
     for i in range(len(pos)):
-        #for j in range(4):
-        x1 = int(pos[i,0])
-        #print x1
-        y1 = int(pos[i,1])
-        x2 = int(x1+pos[i,2])
-        y2 = int(y1+pos[i,3])
-        #print x1,y1,x2,y2
+        # for j in range(4):
+        x1 = int(pos[i, 0])
+        # print x1
+        y1 = int(pos[i, 1])
+        x2 = int(x1 + pos[i, 2])
+        y2 = int(y1 + pos[i, 3])
+        # print x1,y1,x2,y2
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(image, str(i), (x1-50,y1+25), font, 1, (0, 255, 0), 2)
-        cv2.rectangle(image,(x1,y1),(x2,y2),(255,0,0), 2)
-    cv2.imwrite('/home/deepayan/CVIT_codes/API/temp.jpg',image)
+        cv2.putText(image, str(i), (x1 - 50, y1 + 25), font, 1, (0, 255, 0), 2)
+        cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+    cv2.imwrite(path + '/temp.jpg', image)
+
 
 def show_blocks(image_name):
     image = cv2.imread(image_name)
