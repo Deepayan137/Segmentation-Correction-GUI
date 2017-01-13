@@ -17,8 +17,8 @@ def box(dir):
         box('/home/deepayan/codes_seg/new_set2/'+file)
         print c'''
 #box('/home/deepayan/codes_seg/data/new_set/')
-def click_drag(tempFile,image_name,path):
-   
+def click_drag(tempFile,image_name):
+    path = '/home/deepayan/CVIT_codes/API/'
     name = (os.path.basename(str(image_name)))
     file_name = path+ name + '.lines.txt'
     print file_name
@@ -54,7 +54,7 @@ def click_drag(tempFile,image_name,path):
     cv2.resizeWindow('image', 500,800)
     cv2.setMouseCallback("image", draw_rect)
     #file_name = "/home/deepayan/codes_seg/set2/SiddhantaChandrika_Page_05.jpg.lines.txt"
-    #clone = image.copy()
+    clone = image.copy()
     # print file_name
     data = []
 
@@ -102,7 +102,7 @@ def findIndex2(p,q, file_name):
     pos = 0
     x = p
     y = q
-    print x,y
+
     for i in range(len(data)):
         npx = data[i][0]
         npy = data[i][1]
@@ -113,8 +113,8 @@ def findIndex2(p,q, file_name):
                 pos=i
     return  pos
 #click_drag("/home/deepayan/codes_seg/set2/temp.jpg")
-def deleteRow(tempFile,image_name,path):
-    
+def deleteRow(tempFile,image_name):
+    path = '/home/deepayan/CVIT_codes/API/'
     name = (os.path.basename(str(image_name)))
     file_name = path + name + '.lines.txt'
     def draw_rect(event, x, y, flags, param):
@@ -193,12 +193,7 @@ def edit(tempFile,image_name,path):
             ix,iy = x,y
 
             cv2.imshow("image", image)
-	# check to see if the left mouse button was released
 
-
-
-		# draw a rectangle around the region of interest
-		#cv2.rectangle(image, refPt[0], (0, 0, 255), -1)
 
     image  = cv2.imread(tempFile)
     cv2.namedWindow('image',cv2.WINDOW_NORMAL)
@@ -227,8 +222,11 @@ def edit(tempFile,image_name,path):
             npw = int(data[rowPos][2])
             nph = int(data[rowPos][3])
             cv2.rectangle(image,(npx,npy),(npx+npw,npy+nph),[0,0,255],3)
+
             data = np.delete(data, rowPos, 0)
-            x,y,w,h = change(image,npx,npy,npw,nph)
+            image_path= path+'new_temp.jpg'
+            cv2.imwrite(image_path,image)
+            x,y,w,h = change(image_path,npx,npy,npw,nph)
             data = np.insert(data,rowPos, np.array([[x,y,w,h]]), axis=0)
 
 
