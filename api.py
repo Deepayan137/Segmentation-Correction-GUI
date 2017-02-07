@@ -57,8 +57,40 @@ def post_info(id, image, text_file,path):
         state=1
     elif r.status_code == 400:
         state = 2
-    elif r.staus_code == 403:
+    elif r.status_code == 403:
         state = 3
     return state
+
+def delete_info(id, image,path):
+    state =0
+    api_file = path
+    session = requests.Session()
+    # session.add_header("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+
+    session.trust_env = False
+
+    # with open(image, "rb") as image_file:
+    # encoded_image = base64.b64encode(image_file.read())
+    url3 = 'http://ocr.iiit.ac.in/beta/service/api/segmentation/reject/'
+    data = {'image': str(id)}
+    files = {'fixed_image': open(image, "rb")}
+    r = session.post(url3, files=files, data=data)
+    if r.status_code == 200:
+        #shutil.rmtree('/home/deepayan/CVIT_codes/API/')
+
+        test = path+'*'
+        r = glob.glob(test)
+        for i in r:
+            os.remove(i)
+
+
+
+        state=1
+    elif r.status_code == 400:
+        state = 2
+    elif r.status_code == 403:
+        state = 3
+    return state
+
 
 

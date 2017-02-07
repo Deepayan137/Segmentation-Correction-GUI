@@ -1,29 +1,31 @@
 import sys
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QDir, Qt
-
 import glob, os
-from api import request_info,post_info
+from api import request_info,post_info,delete_info
 from contents import find
 import subprocess
 from convert_format import convert
 from skew_correction import deskew,manual_deskew
 from test import show_image
 from segmentation import click_drag, deleteRow,edit,Shift
+from new_window import Ui_MainWindow
 state = 0
 event=0
 angle =0.0
 id =0
 imageName= []
 fileName = ''
-
+s=0
 path = sys.argv[1]
 path2 = sys.argv[2]
 tempFile = path+'temp.jpg'
 tempFile2 = path2+'skew_temp.jpg'
-class ImageViewer(QtGui.QMainWindow):
-    def __init__(self):
+class ImageViewer(QtGui.QMainWindow,Ui_MainWindow):
+    def __init__(self,parent = None):
         super(ImageViewer, self).__init__()
+        #ImageViewer.__init__(self, parent)
+        self.setupUi(self)
+        self.host_mac = 'blah blah'
 
         self.printer = QtGui.QPrinter()
         self.scaleFactor = 0.0
@@ -160,25 +162,26 @@ class ImageViewer(QtGui.QMainWindow):
         self.imageLabel.setPixmap(pixmap)
         self.imageLabel.setScaledContents(True)
     def draw_boxes(self):
-        global fileName,tempFile
+        global fileName,tempFile,s
 
         '''if os.path.exists(str(fileName) + '.lines.txt')== False:
             #if  os.path.exists(str(fileName) + '.blocks.txt')== False:
              box(str(fileName))'''
 
-        show_image(str(fileName))
+        show_image(str(fileName),s)
+
         pixmap = QtGui.QPixmap(tempFile)
         self.imageLabel.setPixmap(pixmap)
         self.imageLabel.setScaledContents(True)
 
     def mouseRemove(self):
-        global tempFile, fileName, state,path
+        global tempFile, fileName, state
 
         # deleteRow(str(tempFile2),str(fileName+'.lines.txt'))
         if state == 0:
-            deleteRow(str(tempFile), str(fileName),path)
+            deleteRow(str(tempFile), str(fileName))
         elif state == 1:
-            deleteRow(str(tempFile), str(fileName),path)
+            deleteRow(str(tempFile), str(fileName))
 
     def nextPicture(self):
 
@@ -248,12 +251,28 @@ class ImageViewer(QtGui.QMainWindow):
        self.previousPicture()
 
     def delete(self):
-        global fileName
-        cwd = os.getcwd()
-        subprocess.call('cd /', shell=True)
+        global fileName,id,path
+        status = delete_info(id, fileName, path)
+        print status
+        if status == 1:
+            msg = QtGui.QMessageBox()
+            msg.setIcon(QtGui.QMessageBox.Information)
+            msg.setText("File is removed")
 
-        subprocess.call('mv' + ' ' + fileName+' '+'/home/deepayan/codes_seg/wrong/', shell=True)
-        subprocess.call('cd ' + cwd, shell=True)
+            msg.exec_()
+            # self.loadImage()
+        elif status == 2:
+            msg = QtGui.QMessageBox()
+            msg.setIcon(QtGui.QMessageBox.Information)
+            msg.setText("ERROR")
+            msg.exec_()
+        elif status == 3:
+            msg = QtGui.QMessageBox()
+            msg.setIcon(QtGui.QMessageBox.Information)
+            msg.setText("BAD METHOD\n Try Again")
+            msg.exec_()
+
+
 
     def remove(self):
         global  fileName
@@ -284,11 +303,11 @@ class ImageViewer(QtGui.QMainWindow):
        # self.scaleFactor = 1.0
 
     def mouseDraw(self, factor):
-        global tempFile, fileName, state,path
+        global tempFile, fileName, state
         if state == 0:
-            click_drag(str(tempFile), str(fileName),path)
+            click_drag(str(tempFile), str(fileName))
         elif state == 1:
-            click_drag(str(tempFile), str(fileName),path)
+            click_drag(str(tempFile), str(fileName))
 
     def mouseEdit(self):
         global fileName,tempFile,state,path
@@ -339,6 +358,25 @@ class ImageViewer(QtGui.QMainWindow):
                                "<p>In addition the example shows how to use QPainter to "
                                "print an image.</p>")
 
+    def wind(self):
+        global fileName
+        print "triggered"
+        #sh("/home/deepayan/CVIT_codes/GUI/second_win_2.py")
+        output=subprocess.check_output('python' + ' ' + '/home/deepayan/CVIT_codes/GUI/new_window.py', shell=True)
+        checked=int(output.split('.')[0])
+        s = checked
+        show_image(fileName,s)
+
+
+        #print './j-layout ' + fileName + ' ' + '-psm' + ' ' + checked
+        #self.mySubwindow = new_window.MainWindow()
+        #self.mySubwindow.btnstate()
+        #self.mySubwindow.show()
+
+
+
+
+
     def createActions(self):
        self.openAct = QtGui.QAction("&Open...", self, shortcut="Ctrl+O",
                                     triggered=self.loadImage)
@@ -385,12 +423,14 @@ class ImageViewer(QtGui.QMainWindow):
                                        triggered=self.draw_boxes)
 
        #self.mouseRemoveAct = QtGui.QAction("&Restore", self, triggered=self.restoration)
-       self.mouseRemoveAct = QtGui.QAction("&Remove", self, triggered=self.mouseRemove)
+       #self.mouseRemoveAct = QtGui.QAction("&Remove", self, triggered=self.mouseRemove)
        self.mouseEditAct = QtGui.QAction("&Edit", self, triggered=self.mouseEdit)
        self.mouseShiftAct = QtGui.QAction("&Shift", self, triggered=self.mouseShift)
        self.trashAct = QtGui.QAction("&Trash", self, triggered=self.delete)
 
        self.deskewAct = QtGui.QAction("&Deskew", self,triggered=self.deskew)
+       self.windAct = QtGui.QAction("&Wind", self,triggered=self.wind)
+
     def createMenus(self):
        self.fileMenu = QtGui.QMenu("&File", self)
        self.toolbar = QtGui.QToolBar(self)
@@ -410,6 +450,8 @@ class ImageViewer(QtGui.QMainWindow):
        self.helpMenu = QtGui.QMenu("&Help", self)
        self.helpMenu.addAction(self.aboutAct)
        self.helpMenu.addAction(self.aboutQtAct)
+       self.testMenu = QtGui.QMenu("&Test", self)
+       self.testMenu.addAction(self.windAct)
        self.skewMenu = QtGui.QMenu("&Deskew",self)
        self.skewMenu.addAction(self.skewPositiveAct)
        self.skewMenu.addAction(self.skewNegativeAct)
@@ -421,13 +463,14 @@ class ImageViewer(QtGui.QMainWindow):
        self.menuBar().addMenu(self.viewMenu)
        self.menuBar().addMenu(self.helpMenu)
        self.menuBar().addMenu(self.skewMenu)
+       self.menuBar().addMenu(self.testMenu)
        #self.toolbar.addAction(self.restorationAct)
        self.toolbar.addAction(self.onNextAct)
        #self.toolbar.addAction(self.onPreviousAct)
        self.toolbar.addAction(self.moveAct)
        self.toolbar.addAction(self.mouseDrawAct)
        self.toolbar.addAction(self.segmentAct)
-       self.toolbar.addAction(self.mouseRemoveAct)
+       #self.toolbar.addAction(self.mouseRemoveAct)
        self.toolbar.addAction(self.mouseEditAct)
        self.toolbar.addAction(self.mouseShiftAct)
        self.toolbar.addAction(self.trashAct)
