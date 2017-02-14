@@ -77,7 +77,7 @@ def click_drag(tempFile,image_name):
 
     data = data[data[:, 1].argsort()]
     cv2.destroyAllWindows()
-    np.savetxt(file_name,data,delimiter=' ')
+    np.savetxt(file_name,data, fmt='%i',delimiter=' ')
 
 
 def findIndex(pts, file_name):
@@ -174,7 +174,7 @@ def deleteRow(tempFile,image_name):
 
     data = data[data[:, 1].argsort()]
     cv2.destroyAllWindows()
-    np.savetxt(file_name, data, delimiter=' ')
+    np.savetxt(file_name, data, fmt='%i', delimiter=' ')
 
 
 
@@ -235,7 +235,7 @@ def edit(tempFile,image_name,path):
             image = clone.copy()
     data = data[data[:, 1].argsort()]
     cv2.destroyAllWindows()
-    np.savetxt(file_name, data, delimiter=' ')
+    np.savetxt(file_name, data, fmt='%i',delimiter=' ')
 
 def Shift(tempFile,image_name,location):
     path = location
@@ -292,4 +292,4 @@ def Shift(tempFile,image_name,location):
             image = clone.copy()
     data = data[data[:, 1].argsort()]
     cv2.destroyAllWindows()
-    np.savetxt(file_name, data, delimiter=' ')
+    np.savetxt(file_name, data, fmt='%i',delimiter=' ')
